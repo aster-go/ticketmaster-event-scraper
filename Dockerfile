@@ -2,6 +2,9 @@
 # Using standard Node.js image since we don't need Puppeteer anymore
 FROM apify/actor-node:22 AS builder
 
+# Set working directory
+WORKDIR /home/myuser
+
 # Check preinstalled packages (apify should be available)
 RUN npm ls apify || true
 
@@ -16,12 +19,24 @@ RUN npm install --include=dev --audit=false
 # in the base image.
 COPY --chown=myuser:myuser . ./
 
-# Build the project.
-# Don't audit to speed up the installation.
-RUN npm run build
+# Build the project and verify dist directory was created
+RUN echo "Current directory:" && pwd && \
+    echo "Files before build:" && ls -la && \
+    npm run build && \
+    echo "Files after build:" && ls -la && \
+    echo "Checking dist directory..." && \
+    if [ ! -d "dist" ]; then \
+        echo "ERROR: dist directory not found after build!" && \
+        echo "Contents of current directory:" && ls -la && \
+        exit 1; \
+    fi && \
+    echo "dist directory found:" && ls -la dist/
 
 # Create final image
 FROM apify/actor-node:22
+
+# Set working directory
+WORKDIR /home/myuser
 
 # Check preinstalled packages (apify should be available)
 RUN npm ls apify || true
@@ -44,6 +59,7 @@ RUN npm --quiet set progress=false \
     && rm -r ~/.npm
 
 # Copy built JS files from builder image
+# Verify dist exists in builder before copying
 COPY --from=builder --chown=myuser:myuser /home/myuser/dist ./dist
 
 # Next, copy the remaining files and directories with the source code.
