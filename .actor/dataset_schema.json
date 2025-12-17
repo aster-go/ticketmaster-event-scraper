@@ -1,0 +1,70 @@
+{
+    "actorSpecification": 1,
+    "fields": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string",
+                "description": "Event name"
+            },
+            "date": {
+                "type": "string",
+                "description": "Event date and time in ISO 8601 format"
+            },
+            "venue": {
+                "type": "string",
+                "description": "Venue name and location"
+            },
+            "priceRange": {
+                "type": "string",
+                "description": "Price range"
+            },
+            "url": {
+                "type": "string",
+                "description": "URL to the event page"
+            },
+            "image": {
+                "type": ["string", "null"],
+                "description": "URL to the event image"
+            }
+        },
+        "required": ["name", "date", "venue", "priceRange", "url"]
+    },
+    "views": {
+        "overview": {
+            "title": "Events Overview",
+            "transformation": {
+                "fields": ["name", "date", "venue", "priceRange", "url", "image"]
+            },
+            "display": {
+                "component": "table",
+                "properties": {
+                    "name": {
+                        "label": "Event Name",
+                        "format": "text"
+                    },
+                    "date": {
+                        "label": "Date & Time",
+                        "format": "date"
+                    },
+                    "venue": {
+                        "label": "Venue",
+                        "format": "text"
+                    },
+                    "priceRange": {
+                        "label": "Price Range",
+                        "format": "text"
+                    },
+                    "url": {
+                        "label": "Event URL",
+                        "format": "link"
+                    },
+                    "image": {
+                        "label": "Image",
+                        "format": "image"
+                    }
+                }
+            }
+        }
+    }
+}

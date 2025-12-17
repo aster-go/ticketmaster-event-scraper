@@ -1,0 +1,58 @@
+{
+    "title": "Ticketmaster Event Scraper Input",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "apiKey": {
+            "title": "Ticketmaster API Key",
+            "type": "string",
+            "description": "Your Ticketmaster Discovery API key. Get it from https://developer.ticketmaster.com/",
+            "editor": "textfield"
+        },
+        "location": {
+            "title": "Location",
+            "type": "string",
+            "description": "City or region (e.g., \"New York\" or \"London\")",
+            "default": "New York",
+            "prefill": "New York",
+            "editor": "textfield"
+        },
+        "category": {
+            "title": "Category",
+            "type": "string",
+            "description": "Category of events",
+            "default": "music",
+            "enum": ["music", "sports", "theater"],
+            "enumTitles": ["Music/Concerts", "Sports", "Theater/Arts"]
+        },
+        "startDate": {
+            "title": "Start Date",
+            "type": "string",
+            "description": "Optional start date in format YYYY-MM-DD (e.g., \"2025-12-01\")",
+            "editor": "textfield"
+        },
+        "endDate": {
+            "title": "End Date",
+            "type": "string",
+            "description": "Optional end date in format YYYY-MM-DD (e.g., \"2026-01-01\")",
+            "editor": "textfield"
+        },
+        "maxPages": {
+            "title": "Max Pages",
+            "type": "integer",
+            "description": "Maximum number of pages to paginate (default: 5, max: 20). API supports up to 1000 items (size * page < 1000)",
+            "default": 5,
+            "minimum": 1,
+            "maximum": 20
+        },
+        "pageSize": {
+            "title": "Page Size",
+            "type": "integer",
+            "description": "Number of events per page (default: 20, max: 200)",
+            "default": 20,
+            "minimum": 1,
+            "maximum": 200
+        }
+    },
+    "required": ["apiKey", "location", "category"]
+}
