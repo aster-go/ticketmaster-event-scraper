@@ -28,13 +28,15 @@
         "startDate": {
             "title": "Start Date",
             "type": "string",
-            "description": "Optional start date in format YYYY-MM-DD (e.g., \"2025-12-01\")",
+            "description": "Optional start date in format YYYY-MM-DD. Default: first day of previous month (e.g., if today is January 2025, default is \"2025-12-01\")",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
             "editor": "textfield"
         },
         "endDate": {
             "title": "End Date",
             "type": "string",
-            "description": "Optional end date in format YYYY-MM-DD (e.g., \"2026-01-01\")",
+            "description": "Optional end date in format YYYY-MM-DD. Default: last day of next month (e.g., if today is January 2025, default is \"2026-02-28\")",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
             "editor": "textfield"
         },
         "maxPages": {

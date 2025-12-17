@@ -2,7 +2,7 @@ import { Actor } from 'apify';
 
 import { TicketmasterApiClient } from './api-client.js';
 import type { TicketmasterInput } from './types.js';
-import { isValidDateFormat } from './utils.js';
+import { getNextMonthEnd, getPreviousMonthStart, isValidDateFormat } from './utils.js';
 
 // Initialize the Actor
 await Actor.init();
@@ -23,32 +23,43 @@ if (!input.location || !input.category) {
     throw new Error('Location and category are required fields.');
 }
 
-// Validate date formats if provided
-if (input.startDate && !isValidDateFormat(input.startDate)) {
-    throw new Error(`Invalid startDate format. Expected YYYY-MM-DD, got: ${input.startDate}`);
+// Set default dates if not provided
+// Default: previous month start to next month end
+const startDate = input.startDate || getPreviousMonthStart();
+const endDate = input.endDate || getNextMonthEnd();
+
+// Validate date formats
+if (!isValidDateFormat(startDate)) {
+    throw new Error(`Invalid startDate format. Expected YYYY-MM-DD, got: ${startDate}`);
 }
 
-if (input.endDate && !isValidDateFormat(input.endDate)) {
-    throw new Error(`Invalid endDate format. Expected YYYY-MM-DD, got: ${input.endDate}`);
+if (!isValidDateFormat(endDate)) {
+    throw new Error(`Invalid endDate format. Expected YYYY-MM-DD, got: ${endDate}`);
 }
 
 // Validate date range
-if (input.startDate && input.endDate) {
-    const start = new Date(input.startDate);
-    const end = new Date(input.endDate);
-    if (start > end) {
-        throw new Error('startDate must be before or equal to endDate');
-    }
+const start = new Date(startDate);
+const end = new Date(endDate);
+if (start > end) {
+    throw new Error('startDate must be before or equal to endDate');
 }
 
 // Set defaults
 const maxPages = Math.min(input.maxPages ?? 5, 20); // API supports up to 1000 items
 const pageSize = Math.min(input.pageSize ?? 20, 200); // API max is 200 per page
 
+// Create input with default dates
+const inputWithDates: TicketmasterInput = {
+    ...input,
+    startDate,
+    endDate,
+};
+
 // Create API client
 const apiClient = new TicketmasterApiClient(input.apiKey);
 
 console.log(`Starting to fetch events for ${input.category} in ${input.location}`);
+console.log(`Date range: ${startDate} to ${endDate}`);
 console.log(`Max pages: ${maxPages}, Page size: ${pageSize}`);
 
 let totalEvents = 0;
@@ -70,7 +81,7 @@ while (currentPage < maxPages) {
             });
         }
 
-        const response = await apiClient.searchEvents(input, currentPage, pageSize);
+        const response = await apiClient.searchEvents(inputWithDates, currentPage, pageSize);
 
         // Check if we have events
         // eslint-disable-next-line no-underscore-dangle
