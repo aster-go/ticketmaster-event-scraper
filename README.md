@@ -142,7 +142,7 @@ Single dataset with all event records, structured and ready for use.
    Sign up at [developer.ticketmaster.com](https://developer.ticketmaster.com/) and create an app to get your free API key.
 
 2. **Configure Input**  
-   Set your API key, location, and category in the Apify Console or `INPUT.json`.
+   Set your API key, location, and category.
 
 3. **Run the Actor**  
    Click "Run" in Apify Console or use `apify run` locally.
